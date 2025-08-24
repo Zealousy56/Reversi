@@ -27,10 +27,6 @@ public class Reversi {
     JLabel bLabel = new JLabel("Black"+notYourTurn);
 
     char turn = 'w';
-    public static void main(String[] args){
-        Reversi game = new Reversi();
-        game.start(game.board1,game.board2);
-    }
 
     public void start(Board player1, Board player2){
         int i;
