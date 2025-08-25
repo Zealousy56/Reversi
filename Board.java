@@ -43,9 +43,11 @@ public class Board {
             squareArray[64-1-i].index=i;
             Square temp = squareArray[i];
             squareArray[i]=squareArray[64-1-i];
-            squareArray[64-1-i]=temp;   
+            squareArray[64-1-i]=temp;
         }
     }
+
+
     public void setPlaceable(){
         int i;
         int j;
@@ -99,117 +101,29 @@ public class Board {
         }
     }
 
-    public void capture(int index){
-        int i=index;
-        i+=9;
-        while (i>=0 && i<64 && squareArray[i].state != 'e'){
-            if(squareArray[i].state == turn){
-                i-=9;
-                while(squareArray[i].state != turn){
-                    squareArray[i].captured(turn);
-                    i-=9;
-                }
-                break;
-            }
-            i+=9;
-        }
-        
-        i=index;
-        i+=8;
-        while (i>=0 && i<64 && squareArray[i].state != 'e'){
-            if(squareArray[i].state == turn){
-                i-=8;
-                while(squareArray[i].state != turn){
-                    squareArray[i].captured(turn);
-                    i-=8;
-                }
-                break;
-            }
-            i+=8;
-        }
-        
-        i=index;
-        i+=7;
-        while (i>=0 && i<64 && squareArray[i].state != 'e'){
-            if(squareArray[i].state == turn){
-                i-=7;
-                while(squareArray[i].state != turn){
-                    squareArray[i].captured(turn);
-                    i-=7;
-                }
-                break;
-            }
-            i+=7;
-        }
 
-        i=index;
-        i+=1;
-        while (i>=0 && i<64 && squareArray[i].state != 'e'){
-            if(squareArray[i].state == turn){
-                i-=1;
-                while(squareArray[i].state != turn){
-                    squareArray[i].captured(turn);
-                    i-=1;
-                }
-                break;
-            }
-            i+=1;
-        }
+    public void capture(int piece){
+        int i;
+        int cap;
+        int[] adj = {9, 8, 7, 1, -1, -7, -8, -9};
 
-        i=index;
-        i-=1;
-        while (i>=0 && i<64 && squareArray[i].state != 'e' ){
-            if(squareArray[i].state == turn){
-                i+=1;
-                while(squareArray[i].state != turn){
-                    squareArray[i].captured(turn);
-                    i+=1;
-                }
-                break;
-            }
-            i-=1;
-        }
+        for(i = 0; i < adj.length; i++) {
 
-        i=index;
-        i-=7;
-        while (i>=0 && i<64 && squareArray[i].state != 'e'){
-            if(squareArray[i].state == turn){
-                i+=7;
-                while(squareArray[i].state != turn){
-                    squareArray[i].captured(turn);
-                    i+=7;
-                }
-                break;
-            }
-            i-=7;
-        }
+            cap = piece;
 
-        i=index;
-        i-=8;
-        while (i>=0 && i<64 && squareArray[i].state != 'e'){
-            if(squareArray[i].state == turn){
-                i+=8;
-                while(squareArray[i].state != turn){
-                    squareArray[i].captured(turn);
-                    i+=8;
-                }
-                break;
-            }
-            i-=8;
-        }
+            while (cap >= 0 && cap < 64 && squareArray[cap].state != 'e') {
 
-        i=index;
-        i-=9;
-        while (i>=0 && i<64 && squareArray[i].state != 'e'){
-            if(squareArray[i].state == turn){
-                i+=9;
-                while(squareArray[i].state != turn){
-                    squareArray[i].captured(turn);
-                    i+=9;
+                cap += adj[i];
+
+                if (squareArray[cap].state == turn) {
+                    cap -= adj[i];
+                    while (squareArray[cap].state != turn) {
+                        squareArray[cap].captured(turn);
+                        cap -= adj[i];
+                    }
+                    break;
                 }
-                break;
             }
-            i-=9;
         }
     }
 }
