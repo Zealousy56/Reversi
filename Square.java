@@ -28,16 +28,11 @@ public class Square extends JButton{
         index = pos;
     }
 
-
-    public Square(int width, int height, Color color){
-        this('e', width, height, color, 0, Color.BLACK,0);
-    }
-
     public void setState(char state){
-        if (state=='w' & wPlaceable==true){
+        if (state=='w' & wPlaceable){
             this.state=state;
         }
-        else if(state=='b' & bPlaceable==true){
+        else if(state=='b' & bPlaceable){
             this.state=state;
         }
     }
@@ -68,54 +63,33 @@ public class Square extends JButton{
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
+
+        g.setColor(borderColor);
+        g.fillRect(0,0,getWidth(),getHeight());
+        g.setColor(drawColor);
+        g.fillRect(borderSize, borderSize, getWidth()-borderSize*2, getHeight()-borderSize*2);
+
         if (state == 'e'){
-            if (wPlaceable == true){
-                g.setColor(borderColor);
-                g.fillRect(0,0,getWidth(),getHeight());
-                g.setColor(drawColor);
-                g.fillRect(borderSize, borderSize, getWidth()-borderSize*2, getHeight()-borderSize*2);
+
+            if (wPlaceable)
                 g.setColor(Color.WHITE);
-                g.fillOval(borderSize+1, borderSize+1, getWidth()-(borderSize+1)*2, getHeight()-(borderSize+1)*2);
-                g.setColor(drawColor);
-                g.fillOval(borderSize+5, borderSize+5, getWidth()-(borderSize+5)*2, getHeight()-(borderSize+5)*2);
-            }
-            else if (bPlaceable == true){
-                g.setColor(borderColor);
-                g.fillRect(0,0,getWidth(),getHeight());
-                g.setColor(drawColor);
-                g.fillRect(borderSize, borderSize, getWidth()-borderSize*2, getHeight()-borderSize*2);
+            else if (bPlaceable)
                 g.setColor(Color.BLACK);
-                g.fillOval(borderSize+1, borderSize+1, getWidth()-(borderSize+1)*2, getHeight()-(borderSize+1)*2);
-                g.setColor(drawColor);
-                g.fillOval(borderSize+5, borderSize+5, getWidth()-(borderSize+5)*2, getHeight()-(borderSize+5)*2);
-            }
-            else{
-                g.setColor(borderColor);
-                g.fillRect(0,0,getWidth(),getHeight());
-                g.setColor(drawColor);
-                g.fillRect(borderSize, borderSize, getWidth()-borderSize*2, getHeight()-borderSize*2); 
-            }
-            
+
+            g.fillOval(borderSize+1, borderSize+1, getWidth()-(borderSize+1)*2, getHeight()-(borderSize+1)*2);
+            g.setColor(drawColor);
         }
         else if (state=='b'){
-            g.setColor(borderColor);
-            g.fillRect(0,0,getWidth(),getHeight());
-            g.setColor(drawColor);
-            g.fillRect(borderSize, borderSize, getWidth()-borderSize*2, getHeight()-borderSize*2);
             g.setColor(Color.WHITE);
             g.fillOval(borderSize+1, borderSize+1, getWidth()-(borderSize+1)*2, getHeight()-(borderSize+1)*2);
             g.setColor(Color.BLACK);
-            g.fillOval(borderSize+5, borderSize+5, getWidth()-(borderSize+5)*2, getHeight()-(borderSize+5)*2);
         }
         else if (state=='w'){
-            g.setColor(borderColor);
-            g.fillRect(0,0,getWidth(),getHeight());
-            g.setColor(drawColor);
-            g.fillRect(borderSize, borderSize, getWidth()-borderSize*2, getHeight()-borderSize*2);
             g.setColor(Color.BLACK);
             g.fillOval(borderSize+1, borderSize+1, getWidth()-(borderSize+1)*2, getHeight()-(borderSize+1)*2);
             g.setColor(Color.WHITE);
-            g.fillOval(borderSize+5, borderSize+5, getWidth()-(borderSize+5)*2, getHeight()-(borderSize+5)*2);
         }
+
+        g.fillOval(borderSize+5, borderSize+5, getWidth()-(borderSize+5)*2, getHeight()-(borderSize+5)*2);
     }
 }

@@ -110,11 +110,9 @@ public class Board {
         for(i = 0; i < adj.length; i++) {
 
             cap = piece;
+            cap += adj[i];
 
             while (cap >= 0 && cap < 64 && squareArray[cap].state != 'e') {
-
-                cap += adj[i];
-
                 if (squareArray[cap].state == turn) {
                     cap -= adj[i];
                     while (squareArray[cap].state != turn) {
@@ -123,6 +121,8 @@ public class Board {
                     }
                     break;
                 }
+
+                cap += adj[i];
             }
         }
     }
