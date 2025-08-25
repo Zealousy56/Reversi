@@ -26,13 +26,13 @@ public class Board {
         for(i=0;i<64;i++)
         {
             if (i==27 | i==36){
-                squareArray[i] = new Square('w',50, 50,Color.GREEN, 5, Color.BLACK,i);
+                squareArray[i] = new Square('w',50, 50, new Color(245, 200, 150), 5, Color.BLACK,i);
             }
             else if(i==28 | i==35){
-                squareArray[i] = new Square('b',50, 50,Color.GREEN, 5, Color.BLACK,i);
+                squareArray[i] = new Square('b',50, 50, new Color(245, 200, 150), 5, Color.BLACK,i);
             }
             else{
-                squareArray[i] = new Square('e',50, 50,Color.GREEN, 5, Color.BLACK,i);
+                squareArray[i] = new Square('e',50, 50, new Color(245, 200, 150), 5, Color.BLACK,i);
             }
         }
     }
@@ -49,161 +49,50 @@ public class Board {
     public void setPlaceable(){
         int i;
         int j;
+        int index;
         int counter1=0;
+        int[] adj= {9, 8, 7, 1, -1, -7, -8, -9};
+
         for(i=0;i<64;i++){
             squareArray[i].resetPlace();
         }
+
         if(turn==player){
             for(i=0;i<64;i++){
                 if(squareArray[i].state!='e' && squareArray[i].state==turn){
-                    if(i-9 >= 0 && (i-9) % 8 != 0 && squareArray[i-9].state != 'e' && squareArray[i-9].state != turn){
-                        j=i-9;
-                        counter1+=1;
-                        while(j>=0 && j % 8 != 7){
+                    for(index = 0; index < adj.length; index++) {
+
+                        j = i + adj[index];
+
+                        if (j >= 0 && j <= 63 && squareArray[j].state != 'e' && squareArray[j].state != turn) {
+                            if (((adj[index] == 9 || adj[index] == -7) && j % 8 == 0) || ((adj[index] == -9 || adj[index] == 7) && j % 8 == 7))
+                                continue;
+
                             counter1++;
-                            if (squareArray[j].state=='e'){
-                                squareArray[j].setPlace(turn);
-                                if(counter1>=counter){
-                                    this.counter=counter1;
-                                    greedy=j;
-                                    counter1=0;
+
+                            while (j >= 0 && j <= 63) {
+                                if ((adj[index] == 9 || adj[index] == -7) && j % 8 == 0)
+                                    break;
+
+                                if ((adj[index] == -9 || adj[index] == 7) && j % 8 == 7)
+                                    break;
+
+                                if (squareArray[j].state == turn)
+                                    break;
+
+                                counter1++;
+                                if (squareArray[j].state == 'e') {
+                                    squareArray[j].setPlace(turn);
+                                    if (counter1 >= counter) {
+                                        this.counter = counter1;
+                                        greedy = j;
+                                    }
+                                    break;
                                 }
-                                break;
+                                j += adj[index];
                             }
-                            j-=9;
+                            counter1 = 0;
                         }
-                        counter1=0;
-                    }
-                    if(i-8 >= 0 && squareArray[i-8].state != 'e' && squareArray[i-8].state != turn){
-                        j=i-8;
-                        counter+=1;
-                        while(j>=0){
-                            
-                            counter1++;
-                            if (squareArray[j].state=='e'){
-                                squareArray[j].setPlace(turn);
-                                if(counter1>=counter){
-                                    this.counter=counter1;
-                                    greedy=j;
-                                    counter1=0;
-                                }
-                                break;
-                            }
-                            j-=8;
-                        }
-                        counter1=0;
-                    }
-                    if(i-7 >= 0 && (i-7) % 8 != 0 && squareArray[i-7].state != 'e' && squareArray[i-7].state != turn){
-                        j=i-7;
-                        counter1+=1;
-                        while(j>=0 && (i-7) % 8 != 0){
-                            
-                            counter1++;
-                            if (squareArray[j].state=='e'){
-                                squareArray[j].setPlace(turn);
-                                if(counter1>=counter){
-                                    this.counter=counter1;
-                                    greedy=j;
-                                    counter1=0;
-                                }
-                                break;
-                            }
-                            j-=7;
-                        }
-                        counter1=0;
-                    }
-                    if(i-1 >= 0 && (i-1) % 8 != 0 && squareArray[i-1].state != 'e' && squareArray[i-1].state != turn){
-                        j=i-1;
-                        counter1+=1;
-                        while(j>=0 && j % 8 != 7){
-                            counter1++;
-                            if (squareArray[j].state=='e'){
-                                squareArray[j].setPlace(turn);
-                                if(counter1>=counter){
-                                    this.counter=counter1;
-                                    greedy=j;
-                                    counter1=0;
-                                }
-                                break;
-                            }
-                            j-=1;
-                        }
-                        counter1=0;
-                    }
-                    if(i+1 <= 63 && (i+1) % 8 != 7 && squareArray[i+1].state != 'e' && squareArray[i+1].state != turn){
-                        j=i+1;
-                        counter1+=1;
-                        while(j<=63 && j % 8 != 0){
-                            
-                            counter1++;
-                            if (squareArray[j].state=='e'){
-                                squareArray[j].setPlace(turn);
-                                if(counter1>=counter){
-                                    this.counter=counter1;
-                                    greedy=j;
-                                    counter1=0;
-                                }
-                                break;
-                            }
-                            j+=1;
-                        }
-                        counter1=0;
-                    }
-                    if(i+7 <= 63 && (i+7) % 8 != 0 && squareArray[i+7].state != 'e' && squareArray[i+7].state != turn){
-                        j=i+7;
-                        counter1+=1;
-                        while(j<=63 && j % 8 != 7){
-                            
-                            counter1++;
-                            if (squareArray[j].state=='e'){
-                                squareArray[j].setPlace(turn);
-                                if(counter1>=counter){
-                                    this.counter=counter1;
-                                    greedy=j;
-                                    counter1=0;
-                                }
-                                break;
-                            }
-                            j+=7;
-                        }
-                        counter1=0;
-                    }
-                    if(i+8 <= 63 && squareArray[i+8].state != 'e' && squareArray[i+8].state != turn){
-                        j=i+8;
-                        counter1+=1;
-                        while(j<=63){
-                            counter1++;
-                            if (squareArray[j].state=='e'){
-                                squareArray[j].setPlace(turn);
-                                if(counter1>=counter){
-                                    this.counter=counter1;
-                                    greedy=j;
-                                    counter1=0;
-                                }
-                                break;
-                            }
-                            j+=8;
-                        }
-                        counter1=0;
-                    }
-                    if(i+9 <= 63 && (i+9) % 8 != 7 && squareArray[i+9].state != 'e' && squareArray[i+9].state != turn){
-                        j=i+9;
-                        counter1+=1;
-                        while(j<=63 && j % 8 != 0){
-                            
-                            counter1++;
-                            if (squareArray[j].state=='e'){
-                                squareArray[j].setPlace(turn);
-                                if(counter1>=counter){
-                                    this.counter=counter1;
-                                    greedy=j;
-                                    counter1=0;
-                                }
-                                break;
-                            }
-                            j+=9;
-                        }
-                        counter1=0;
                     }
                 }
             }
