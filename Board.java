@@ -1,38 +1,58 @@
 package reversi;
 
+import javax.swing.*;
 import java.awt.Color;
 
 
 public class Board {
     Square[] squareArray = new Square[64];
     char player;
-    char turn = 'w';
     int counter=0;
     int greedy=29;
 
-    public Board(char play){
-        player=play;
+    public Board(char player){
+        this.player = player;
     }
 
-    public void changeTurn(){
-        if (turn == 'w')
-            this.turn='b';
-        else
-            this.turn='w';
-    }
-
-    public void fillBoard(){
+    public void fillBoard(Reversi reversi){
         int i;
         for(i=0;i<64;i++)
         {
             if (i==27 | i==36){
-                squareArray[i] = new Square('w',50, 50, new Color(245, 200, 150), 5, Color.BLACK,i);
+                squareArray[i] = new Square(
+                        'w',
+                        50, 50,
+                        new Color(245, 200, 150),
+                        5,
+                        Color.BLACK,
+                        i,
+                        reversi,
+                        player
+                );
             }
             else if(i==28 | i==35){
-                squareArray[i] = new Square('b',50, 50, new Color(245, 200, 150), 5, Color.BLACK,i);
+                squareArray[i] = new Square(
+                        'b',
+                        50, 50,
+                        new Color(245, 200, 150),
+                        5,
+                        Color.BLACK,
+                        i,
+                        reversi,
+                        player
+                );
             }
             else{
-                squareArray[i] = new Square('e',50, 50, new Color(245, 200, 150), 5, Color.BLACK,i);
+                squareArray[i] = new Square(
+                        'e',
+                        50, 50,
+                        new Color(245, 200, 150),
+                        5,
+                        Color.BLACK,
+                        i,
+                        reversi,
+                        player
+                );
             }
         }
     }
@@ -47,8 +67,7 @@ public class Board {
         }
     }
 
-
-    public void setPlaceable(){
+    public void setPlaceable(char turn){
         int i;
         int j;
         int index;
@@ -59,10 +78,10 @@ public class Board {
             squareArray[i].resetPlace();
         }
 
-        if(turn==player){
-            for(i=0;i<64;i++){
-                if(squareArray[i].state!='e' && squareArray[i].state==turn){
-                    for(index = 0; index < adj.length; index++) {
+        if(turn == player) {
+            for (i = 0; i < 64; i++) {
+                if (squareArray[i].state != 'e' && squareArray[i].state == turn) {
+                    for (index = 0; index < adj.length; index++) {
 
                         j = i + adj[index];
 
@@ -84,7 +103,7 @@ public class Board {
 
                                 counter1++;
                                 if (squareArray[j].state == 'e') {
-                                    squareArray[j].setPlace(turn);
+                                    squareArray[j].setPlaceable(turn);
                                     if (counter1 >= counter) {
                                         this.counter = counter1;
                                         greedy = j;
@@ -102,7 +121,7 @@ public class Board {
     }
 
 
-    public void capture(int piece){
+    public void capture(int piece, char turn){
         int i;
         int cap;
         int[] adj = {9, 8, 7, 1, -1, -7, -8, -9};

@@ -2,8 +2,11 @@ package reversi;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Menu {
+    Reversi reversi = new Reversi();
     JFrame frame = new JFrame();
 
     public void createGUI(){
@@ -15,7 +18,8 @@ public class Menu {
 
         button.setActionCommand("c");
         button1.setActionCommand("p");
-        //button.addActionListener(new Reversi.GreedyPressed());
+        button.addActionListener(new Menu.ModePressed());
+        button1.addActionListener(new Menu.ModePressed());
 
         panel.setLayout(new GridLayout(1,2));
         panel.add(button);
@@ -31,5 +35,17 @@ public class Menu {
         frame.setVisible(true);
     }
 
+    public class ModePressed implements ActionListener {
 
+        @Override
+        public void actionPerformed(ActionEvent e){
+
+            if (e.getActionCommand().charAt(0) == 'c')
+                reversi.startCOM();
+
+            else{
+                reversi.startPVP();
+            }
+        }
+    }
 }

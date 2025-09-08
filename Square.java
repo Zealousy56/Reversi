@@ -3,7 +3,7 @@ package reversi;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import javax.swing.JButton;
+import javax.swing.*;
 
 public class Square extends JButton{
 
@@ -15,8 +15,16 @@ public class Square extends JButton{
     boolean bPlaceable;
     int index;
 
-    public Square(char selState, int width, int height, Color color,
-    int borderWidth, Color borderCol, int pos){
+    public Square(
+            char selState,
+            int width, int height,
+            Color color,
+            int borderWidth,
+            Color borderCol,
+            int pos,
+            Reversi reversi,
+            char player
+    ){
         state = selState;
         wPlaceable=false;
         bPlaceable=false;
@@ -26,14 +34,18 @@ public class Square extends JButton{
         setMinimumSize( new Dimension(width, height) );
 		setPreferredSize( new Dimension(width, height) );
         index = pos;
+        if(player == 'w')
+            this.addActionListener(reversi.new SquarePressed(reversi.board));
+        else
+            this.addActionListener(reversi.new SquarePressed(reversi.board2));
     }
 
-    public void setState(char state){
-        if (state=='w' & wPlaceable){
-            this.state=state;
+    public void placePiece(char turn){
+        if (turn=='w' & wPlaceable){
+            this.state = turn;
         }
-        else if(state=='b' & bPlaceable){
-            this.state=state;
+        else if(turn=='b' & bPlaceable){
+            this.state = turn;
         }
     }
 
@@ -45,7 +57,7 @@ public class Square extends JButton{
         this.state=state;
     }
 
-    public void setPlace(char place){
+    public void setPlaceable(char place){
         if (place=='w'){
             this.wPlaceable=true;
             this.bPlaceable=false;
@@ -92,4 +104,6 @@ public class Square extends JButton{
 
         g.fillOval(borderSize+5, borderSize+5, getWidth()-(borderSize+5)*2, getHeight()-(borderSize+5)*2);
     }
+
+
 }
