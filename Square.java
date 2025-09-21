@@ -11,66 +11,48 @@ public class Square extends JButton{
     Color borderColor;
     int borderSize;
     char state;
-    boolean wPlaceable;
-    boolean bPlaceable;
-    int index;
+    char player;
+    Reversi game;
+    boolean placeable;
+    int space;
 
     public Square(
             char selState,
             int width, int height,
-            Color color,
             int borderWidth,
+            Color color,
             Color borderCol,
-            int pos,
             Reversi reversi,
-            char player
+            char player,
+            int space
     ){
         state = selState;
-        wPlaceable=false;
-        bPlaceable=false;
         borderSize = borderWidth;
 		drawColor = color;
 		borderColor = borderCol;
         setMinimumSize( new Dimension(width, height) );
 		setPreferredSize( new Dimension(width, height) );
-        index = pos;
-        if(player == 'w')
-            this.addActionListener(reversi.new SquarePressed(reversi.board));
-        else
-            this.addActionListener(reversi.new SquarePressed(reversi.board2));
-    }
+        game = reversi;
+        this.addActionListener(reversi.new SquarePressed());
+        this.player = player;
 
-    public void placePiece(char turn){
-        if (turn=='w' & wPlaceable){
-            this.state = turn;
-        }
-        else if(turn=='b' & bPlaceable){
-            this.state = turn;
-        }
-    }
-
-    public char getState(){
-        return this.state;
-    }
-
-    public void captured(char state){
-        this.state=state;
-    }
-
-    public void setPlaceable(char place){
-        if (place=='w'){
-            this.wPlaceable=true;
-            this.bPlaceable=false;
+        if(player == 'w') {
+            this.space = space;
         }
         else{
-            this.bPlaceable=true;
-            this.wPlaceable=false;
+            this.space = reversi.board.spaces.length - 1 - space;
         }
     }
 
-    public void resetPlace(){
-        this.wPlaceable=false;
-        this.bPlaceable=false;
+    public int getSpace() { return space;}
+
+    public char getPlayer() {return player; }
+
+    public void updateSquare (Space space){
+        this.state = space.getState();
+        if (game.getTurn() == player){
+            this.placeable = space.getPlaceable();
+        }
     }
 
     protected void paintComponent(Graphics g){
@@ -83,9 +65,9 @@ public class Square extends JButton{
 
         if (state == 'e'){
 
-            if (wPlaceable)
+            if (player == 'w' && placeable && game.getTurn() == 'w')
                 g.setColor(Color.WHITE);
-            else if (bPlaceable)
+            else if (player == 'b' && placeable && game.getTurn() == 'b')
                 g.setColor(Color.BLACK);
 
             g.fillOval(borderSize+1, borderSize+1, getWidth()-(borderSize+1)*2, getHeight()-(borderSize+1)*2);

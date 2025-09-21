@@ -10,37 +10,41 @@ import javax.swing.JPanel;
 
 
 public class Reversi {
-    Board board = new Board('w');
-    Board board2 = new Board('b');
-    JFrame frame1 = new JFrame();
-    JFrame frame2 = new JFrame();
-    String yourTurn= " Player - click a square to place your piece";
+    Board board = new Board();
+    Screen screen1;
+    Screen screen2;
+    String yourTurn = " Player - click a square to place your piece";
     String notYourTurn = " Player - not your turn";
-    JLabel wLabel = new JLabel("White"+yourTurn);
-    JLabel bLabel = new JLabel("Black"+notYourTurn);
+    JLabel wLabel = new JLabel("White" + yourTurn);
+    JLabel bLabel = new JLabel("Black" + notYourTurn);
 
     char turn = 'w';
 
     public void startPVP(){
-        board.fillBoard(this);
-        board2.fillBoard(this);
-
+        board.fillBoard();
         board.setPlaceable(turn);
-        board2.setPlaceable(turn);
 
-        board2.reverseBoard();
+        screen1 = new Screen('w');
+        screen2 = new Screen('b');
+        screen1.fillScreen(this);
+        screen2.fillScreen(this);
 
-        this.createGUI(frame1,wLabel,board, "White");
-        this.createGUI(frame2,bLabel,board2, "Black");
+        updateScreens();
+
+        this.createGUI(screen1,wLabel, "White");
+        this.createGUI(screen2,bLabel, "Black");
     }
 
     public void startCOM(){
-        board.fillBoard(this);
+        board.fillBoard();
         board.setPlaceable(turn);
-        changeTurn();
 
-        this.createGUI(frame1,wLabel,board, "White");
+        screen1 = new Screen('w');
+
+        this.createGUI(screen1,wLabel, "White");
     }
+
+    public char getTurn() {return turn; }
 
     public void changeTurn(){
         if (turn == 'w')
@@ -49,24 +53,18 @@ public class Reversi {
             this.turn='w';
     }
 
-    public void update(){
-        int i;
-        for(i=0;i<64;i++){
-            if(turn==board.player){
-                board2.squareArray[63-i].captured(board.squareArray[i].getState());
-            }
-            if(turn== board2.player){
-                board.squareArray[i].captured(board2.squareArray[63-i].getState());
-            }
-        }
+    public void updateScreens(){
+        screen1.updateScreen(board);
+        screen2.updateScreen(board);
     }
 
-    public void createGUI(JFrame guiFrame,JLabel label,Board player,String playerCol){
+
+    public void createGUI(Screen guiFrame,JLabel label,String playerCol){
         int i;
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(8,8));
         for(i=0;i<64;i++){
-            panel.add(player.squareArray[i]);
+            panel.add(guiFrame.squares[i]);
         }
         guiFrame.setTitle("Reversi - " + playerCol + " Player");
         guiFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,37 +77,33 @@ public class Reversi {
     }
 
     public class SquarePressed implements ActionListener {
-
-        Board curPlayer;
-        public SquarePressed(Board player){
-            curPlayer = player;
-        }
-
         public void actionPerformed(ActionEvent e) {
             Square source = (Square) e.getSource();
-            if (source.state == 'e') {
-                source.placePiece(turn);
-                if (source.state == turn) {
-                    curPlayer.capture(source.index, turn);
-                    Reversi.this.update();
-                    changeTurn();
-                    if (turn == 'b') {
-                        wLabel.setText("White" + notYourTurn);
-                        bLabel.setText("Black" + yourTurn);
-                    } else {
-                        wLabel.setText("White" + yourTurn);
-                        bLabel.setText("Black" + notYourTurn);
+            Space space = board.spaces[source.getSpace()];
+            if (source.getPlayer() == turn) {
+                if (space.state == 'e') {
+                    space.placePiece(turn);
+                    if (space.state == turn) {
+                        board.capture(space.index, turn);
+                        changeTurn();
+                        if (turn == 'b') {
+                            wLabel.setText("White" + notYourTurn);
+                            bLabel.setText("Black" + yourTurn);
+                        } else {
+                            wLabel.setText("White" + yourTurn);
+                            bLabel.setText("Black" + notYourTurn);
+                        }
                     }
+                    board.setPlaceable(turn);
+                    updateScreens();
+                    screen1.repaint();
+                    screen2.repaint();
                 }
-                board.setPlaceable(turn);
-                board2.setPlaceable(turn);
-                frame1.repaint();
-                frame2.repaint();
             }
         }
     }
 
-
+/*
     public class GreedyPressed implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e){
@@ -130,10 +124,10 @@ public class Reversi {
 
             changeTurn();
             board.setPlaceable(turn);
-            frame1.repaint();
-            frame2.repaint();
+            screen1.repaint();
+            screen2.repaint();
         }
 
-    }
+    }*/
 }
     
