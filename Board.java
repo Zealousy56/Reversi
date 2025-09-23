@@ -3,7 +3,6 @@ package reversi;
 
 public class Board {
     Space[] spaces = new Space[64];
-    int counter=0;
     int greedy=29;
 
     public void fillBoard(){
@@ -35,7 +34,8 @@ public class Board {
         int i;
         int j;
         int index;
-        int counter1=0;
+        int counter = 0;
+        int counter1 = 0;
         int[] adj= {9, 8, 7, 1, -1, -7, -8, -9};
 
         for(i=0;i<64;i++){
@@ -69,7 +69,7 @@ public class Board {
                             if (spaces[j].state == 'e') {
                                 spaces[j].setPlaceable();
                                 if (counter1 >= counter) {
-                                    this.counter = counter1;
+                                    counter = counter1;
                                     greedy = j;
                                 }
                                 break;

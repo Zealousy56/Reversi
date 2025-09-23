@@ -3,6 +3,7 @@ package reversi;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class Square extends JButton{
@@ -23,6 +24,7 @@ public class Square extends JButton{
             Color color,
             Color borderCol,
             Reversi reversi,
+            ActionListener squarePressed,
             char player,
             int space
     ){
@@ -33,7 +35,7 @@ public class Square extends JButton{
         setMinimumSize( new Dimension(width, height) );
 		setPreferredSize( new Dimension(width, height) );
         game = reversi;
-        this.addActionListener(reversi.new SquarePressed());
+        this.addActionListener(squarePressed);
         this.player = player;
 
         if(player == 'w') {

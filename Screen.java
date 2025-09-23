@@ -2,6 +2,7 @@ package reversi;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class Screen extends JFrame {
     Square[] squares = new Square[64];
@@ -11,7 +12,7 @@ public class Screen extends JFrame {
         this.player = player;
     }
 
-    public void fillScreen (Reversi game){
+    public void fillScreen (Reversi game, ActionListener squarePressed){
         int i;
         for(i=0;i<64;i++)
         {
@@ -23,6 +24,7 @@ public class Screen extends JFrame {
                         new Color(245, 200, 150),
                         Color.BLACK,
                         game,
+                        squarePressed,
                         player,
                         i
                 );
@@ -35,6 +37,7 @@ public class Screen extends JFrame {
                         new Color(245, 200, 150),
                         Color.BLACK,
                         game,
+                        squarePressed,
                         player,
                         i
                 );
@@ -47,6 +50,7 @@ public class Screen extends JFrame {
                         new Color(245, 200, 150),
                         Color.BLACK,
                         game,
+                        squarePressed,
                         player,
                         i
                 );

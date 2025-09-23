@@ -13,8 +13,9 @@ public class Reversi {
     Board board = new Board();
     Screen screen1;
     Screen screen2;
-    String yourTurn = " Player - click a square to place your piece";
-    String notYourTurn = " Player - not your turn";
+    String yourTurn = "'s turn - click a square to place your piece";
+    String notYourTurn = "'s Turn - not your turn";
+    String AITurn = "The Greediest AI is thinking";
     JLabel wLabel = new JLabel("White" + yourTurn);
     JLabel bLabel = new JLabel("Black" + notYourTurn);
 
@@ -26,13 +27,13 @@ public class Reversi {
 
         screen1 = new Screen('w');
         screen2 = new Screen('b');
-        screen1.fillScreen(this);
-        screen2.fillScreen(this);
+        screen1.fillScreen(this, this. new SquarePressedPVP());
+        screen2.fillScreen(this, this. new SquarePressedPVP());
 
-        updateScreens();
+        updateScreens(2);
 
-        this.createGUI(screen1,wLabel, "White");
-        this.createGUI(screen2,bLabel, "Black");
+        this.createGUI(screen1, wLabel, "White");
+        this.createGUI(screen2, bLabel, "Black");
     }
 
     public void startCOM(){
@@ -40,8 +41,11 @@ public class Reversi {
         board.setPlaceable(turn);
 
         screen1 = new Screen('w');
+        screen1.fillScreen(this, this.new SquarePressedCOM());
 
-        this.createGUI(screen1,wLabel, "White");
+        updateScreens(1);
+
+        this.createGUI(screen1, wLabel, "White");
     }
 
     public char getTurn() {return turn; }
@@ -53,9 +57,58 @@ public class Reversi {
             this.turn='w';
     }
 
-    public void updateScreens(){
+    public void playerMove(Square clickedSquare, Space chosenSpace, int players){
+        if (clickedSquare.getPlayer() == turn) {
+            if (chosenSpace.state == 'e') {
+                chosenSpace.placePiece(turn);
+
+                if (chosenSpace.state == turn) {
+                    board.capture(chosenSpace.index, turn);
+                    changeTurn();
+
+                    if (turn == 'b') {
+                        wLabel.setText(AITurn);
+                        if(players == 2) {
+                            wLabel.setText("Black" + notYourTurn);
+                            bLabel.setText("Black" + yourTurn);
+                        }
+                    } else {
+                        wLabel.setText("White" + yourTurn);
+                        bLabel.setText("White" + notYourTurn);
+                    }
+                }
+                board.setPlaceable(turn);
+                updateScreens(players);
+                screen1.repaint();
+                if(players == 2){ screen2.repaint();}
+            }
+        }
+    }
+
+    public void AIMove(){
+        Space greedySpace;
+        if(turn == 'b'){
+            greedySpace = board.spaces[board.greedy];
+            if (greedySpace.state == 'e') {
+                greedySpace.placePiece(turn);
+
+                if (greedySpace.state == turn) {
+                    board.capture(board.greedy, turn);
+                    changeTurn();
+                    wLabel.setText("White" + yourTurn);
+                }
+            }
+        }
+
+        board.setPlaceable(turn);
+        updateScreens(1);
+        screen1.repaint();
+    }
+
+
+    public void updateScreens(int players){
         screen1.updateScreen(board);
-        screen2.updateScreen(board);
+        if(players == 2){ screen2.updateScreen(board);}
     }
 
 
@@ -76,58 +129,31 @@ public class Reversi {
         guiFrame.setVisible(true);
     }
 
-    public class SquarePressed implements ActionListener {
+    public class SquarePressedPVP implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             Square source = (Square) e.getSource();
             Space space = board.spaces[source.getSpace()];
-            if (source.getPlayer() == turn) {
-                if (space.state == 'e') {
-                    space.placePiece(turn);
-                    if (space.state == turn) {
-                        board.capture(space.index, turn);
-                        changeTurn();
-                        if (turn == 'b') {
-                            wLabel.setText("White" + notYourTurn);
-                            bLabel.setText("Black" + yourTurn);
-                        } else {
-                            wLabel.setText("White" + yourTurn);
-                            bLabel.setText("Black" + notYourTurn);
-                        }
-                    }
-                    board.setPlaceable(turn);
-                    updateScreens();
-                    screen1.repaint();
-                    screen2.repaint();
-                }
-            }
+            playerMove(source, space, 2);
         }
     }
 
-/*
-    public class GreedyPressed implements ActionListener{
+
+    public class SquarePressedCOM implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e){
-            char greed = e.getActionCommand().toLowerCase().charAt(0);
-            Square greedySq;
-            if(greed == turn){
-                greedySq=board.squareArray[board.greedy];
-                if (greedySq.state=='e'){
-                    greedySq.placePiece(turn);
-                }
-                if(greedySq.state==turn){
-                    board.capture(board.greedy, turn);
-                    changeTurn();
-                    wLabel.setText("White" + notYourTurn);
-                    bLabel.setText("Black" + yourTurn);
-                }
-            }
+            Square source = (Square) e.getSource();
+            Space space = board.spaces[source.getSpace()];
+            playerMove(source, space, 1);
 
-            changeTurn();
-            board.setPlaceable(turn);
-            screen1.repaint();
-            screen2.repaint();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException d) {
+                    Thread.currentThread().interrupt();
+                }
+                AIMove();
+            }).start();
         }
-
-    }*/
+    }
 }
     
