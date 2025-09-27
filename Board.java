@@ -37,6 +37,8 @@ public class Board {
         int counter = 0;
         int counter1 = 0;
         int[] adj= {9, 8, 7, 1, -1, -7, -8, -9};
+        boolean moveRight;
+        boolean moveLeft;
 
         for(i=0;i<64;i++){
             spaces[i].resetPlaceable();
@@ -50,16 +52,19 @@ public class Board {
                     j = i + adj[index];
 
                     if (j >= 0 && j <= 63 && spaces[j].state != 'e' && spaces[j].state != turn) {
-                        if (((adj[index] == 9 || adj[index] == -7) && j % 8 == 0) || ((adj[index] == -9 || adj[index] == 7) && j % 8 == 7))
+                        moveLeft = adj[index] == -9 || adj[index] == 7 || adj[index] == -1;
+                        moveRight = adj[index] == 9 || adj[index] == -7 || adj[index] == 1;
+
+                        if ((moveRight && j % 8 == 0) || (moveLeft) && j % 8 == 7)
                             continue;
 
                         counter1++;
 
                         while (j >= 0 && j <= 63) {
-                            if ((adj[index] == 9 || adj[index] == -7) && j % 8 == 0)
+                            if (moveRight && j % 8 == 0)
                                 break;
 
-                            if ((adj[index] == -9 || adj[index] == 7) && j % 8 == 7)
+                            if (moveLeft && j % 8 == 7)
                                 break;
 
                             if (spaces[j].state == turn)
@@ -95,6 +100,12 @@ public class Board {
             cap += adj[i];
 
             while (cap >= 0 && cap < 64 && spaces[cap].state != 'e') {
+                if ((
+                        (adj[i] == 9 || adj[i] == -7 || adj[i] == 1) && cap % 8 == 0) ||
+                        ((adj[i] == -9 || adj[i] == 7 || adj[i] == -1) && cap % 8 == 7))
+
+                    break;
+
                 if (spaces[cap].state == turn) {
                     cap -= adj[i];
                     while (spaces[cap].state != turn) {
