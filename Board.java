@@ -30,10 +30,24 @@ public class Board {
         }
     }
 
-    public void setPlaceable(char turn){
+    public int[] countBoard(){
+        int[] noPieces = {0,0};
+        for (Space space : spaces) {
+            if (space.getState() == 'w') {
+                noPieces[0]++;
+            }
+            if (space.getState() == 'b') {
+                noPieces[1]++;
+            }
+        }
+        return noPieces;
+    }
+
+    public boolean setPlaceable(char turn){
         int i;
         int j;
         int index;
+        int optsCount = 0;
         int counter = 0;
         int counter1 = 0;
         int[] adj= {9, 8, 7, 1, -1, -7, -8, -9};
@@ -73,6 +87,7 @@ public class Board {
                             counter1++;
                             if (spaces[j].state == 'e') {
                                 spaces[j].setPlaceable();
+                                optsCount++;
                                 if (counter1 >= counter) {
                                     counter = counter1;
                                     greedy = j;
@@ -86,6 +101,8 @@ public class Board {
                 }
             }
         }
+
+        return optsCount == 0;
     }
 
 

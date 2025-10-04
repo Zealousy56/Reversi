@@ -16,6 +16,9 @@ public class Reversi {
     String yourTurn = "'s turn - click a square to place your piece";
     String notYourTurn = "'s Turn - not your turn";
     String AITurn = "The Greediest AI is thinking";
+    String whiteWins = "White wins!";
+    String blackWins = "Black wins!";
+    String draw = "It's a draw";
     JLabel wLabel = new JLabel("White" + yourTurn);
     JLabel bLabel = new JLabel("Black" + notYourTurn);
 
@@ -77,7 +80,8 @@ public class Reversi {
                         bLabel.setText("White" + notYourTurn);
                     }
                 }
-                board.setPlaceable(turn);
+
+                gameOver();
                 updateScreens(players);
                 screen1.repaint();
                 if(players == 2){ screen2.repaint();}
@@ -100,10 +104,36 @@ public class Reversi {
             }
         }
 
-        board.setPlaceable(turn);
+        gameOver();
         updateScreens(1);
         screen1.repaint();
     }
+
+    public void gameOver(){
+        int[] noPieces;
+        if(board.setPlaceable(turn)){
+            noPieces = board.countBoard();
+
+
+            String result = noPieces[0] + " W - " + noPieces[1] + " B : ";
+
+            if (noPieces[0] > noPieces[1]) {
+                wLabel.setText(result + whiteWins);
+                bLabel.setText(result + whiteWins);
+            }
+
+            else if (noPieces[0] < noPieces[1]) {
+                wLabel.setText(result + blackWins);
+                bLabel.setText(result + blackWins);
+            }
+
+            else{
+                wLabel.setText(result + draw);
+                bLabel.setText(result + draw);
+            }
+        }
+    }
+
 
 
     public void updateScreens(int players){
